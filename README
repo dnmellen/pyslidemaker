@@ -1,0 +1,24 @@
+------------------------------------------------
+S L I D E M A K E R   V 0.6
+------------------------------------------------
+
+AUTHOR: DIEGO NAVARRO 
+CONTACT: dnmellen@gmail.com
+
+This is a very simple script for creating autochanging
+wallpapers using a XML file.
+
+The script has a GUI that is used to select the wallpapers that
+we want to be part of the "slideshow". The user can also change
+the duration of the current wallpaper or change the transition
+time between wallpapers.
+
+The result is a xml file that we can use as wallpaper.
+
+HOW TO USE IT
+-------------
+
+1) Run the script
+
+2) Set the wallpaper
+System > Appearance > Wallpaper > Add and then choose the output.xml file

@@ -1,9 +1,8 @@
-#!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
 __author__ = "Diego Navarro"
 __email__ = "dnmellen@gmail.com"
-__version__ = 0.6
+__version__ = 0.7
 
 
 from lxml import etree

@@ -11,9 +11,10 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import *
 from PIL import Image
 from gui import Ui_Form
-import xmlgenerator
+from xmlgenerator import XmlGenerator
 
 class MyForm(QtGui.QMainWindow):
+
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self,parent)
         self.ui = Ui_Form()
@@ -48,7 +49,7 @@ class MyForm(QtGui.QMainWindow):
     def save(self):
         filename = QtGui.QFileDialog.getSaveFileName(self, 'Save background','background.xml', 'XML file (*.xml)')
 
-        if (not filename):
+        if not filename:
             return -1
 
         # Generate animated background
@@ -56,8 +57,8 @@ class MyForm(QtGui.QMainWindow):
         for i in range(self.ui.listWidget.count()):
             listOfSlides.append(unicode(self.ui.listWidget.item(i).statusTip()))
 
-        xml_handler = xmlgenerator.XmlGenerator(listOfSlides,self.ui.slideSpinBox.value(),self.ui.transitionSpinBox.value())
-        xml_handler.saveTo(unicode(filename))
+        xml_handler = XmlGenerator(listOfSlides,self.ui.slideSpinBox.value(),self.ui.transitionSpinBox.value())
+        xml_handler.save_to(unicode(filename))
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

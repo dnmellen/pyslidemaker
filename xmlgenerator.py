@@ -6,54 +6,66 @@ __email__ = "dnmellen@gmail.com"
 __version__ = 0.6
 
 
-import codecs
+from lxml import etree
+from lxml.builder import ElementMaker
 
 
 class XmlGenerator:
-    """This class generates a valid XML file in order to
+    """
+    This class generates a valid XML file in order to
     get autochanging wallpapers.
-
     """
 
-    _HEADER = '<?xml version="1.0" encoding="UTF-8"?>\n'+\
-              '<background>\n'+\
-              '  <starttime>\n'+\
-              '    <hour>0</hour>\n'+\
-              '    <minute>00</minute>\n'+\
-              '    <second>01</second>\n'+\
-              '  </starttime>\n'
-
-    _BOTTOM = '</background>\n'
 
     def __init__(self,items,slide = 300.0, trans = 1.5):
+        '''
+        Constructor
+
+        '''
         
         self.items = items
         self.slide_duration = slide
         self.trans_duration = trans 
 
-    def getSlideDuration(self):
-        return self.slide_duration
+        # Initialize XML
+        self.E = ElementMaker()
+        self.xml = self.E.background(
+                       self.E.starttime(
+                           self.E.hour("00")
+                           self.E.minute("00")
+                           self.E.second("01")
+                       )
+                   )
 
-    def getTransDuration(self):
-        return self.trans_duration
+    def get_slide_duration(self):
+        return unicode(self.slide_duration)
 
-    def saveTo(self,path):
-    
-        output = codecs.open(path,"w","utf-8")
-        output.writelines(XmlGenerator._HEADER)
 
-        for i in range(len(self.items)):
-            output.writelines('  <static>\n'+
-                              '    <duration>'+str(self.getSlideDuration())+
-                              '</duration>\n'+
-                              '    <file>'+(self.items[i])+'</file>\n'+
-                              '  </static>\n'+
-                              '  <transition>\n'+
-                              '    <duration>'+str(self.getTransDuration())+
-                              '</duration>\n'+
-                              '    <from>'+(self.items[i])+'</from>\n'+
-                              '    <to>'+(self.items[(i+1)%len(self.items)])+
-                              '</to>\n'+
-                              '  </transition>\n') 
-        output.writelines(XmlGenerator._BOTTOM) 
-        output.close()
+    def get_trans_duration(self):
+        return unicode(self.trans_duration)
+
+
+    def save_to(self,path):
+        '''
+        Saves the xml to a file
+        '''   
+
+
+        for i, e in enumerate(self.items):
+            self.xml.append(self.E.static(
+                               self.E.duration(self.get_slide_duration()),
+                               self.E.file(e)
+                               ),
+                            self.E.transition(
+                                   self.E.duration(self.get_trans_duration()),
+                                   self.E.from(e),
+                                   self.E.to(
+                                       self.items[(i + 1) % len(self.items)])
+                               )
+                           ) 
+
+        f = open(path, 'w')
+        f.write(etree.tostring(self.xml, xml_declaration=True, 
+                               encoding='utf-8', pretty_print=True))
+        f.close()
+

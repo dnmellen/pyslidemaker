@@ -30,8 +30,8 @@ class XmlGenerator:
         self.E = ElementMaker()
         self.xml = self.E.background(
                        self.E.starttime(
-                           self.E.hour("00")
-                           self.E.minute("00")
+                           self.E.hour("00"),
+                           self.E.minute("00"),
                            self.E.second("01")
                        )
                    )
@@ -54,12 +54,13 @@ class XmlGenerator:
             self.xml.append(self.E.static(
                                self.E.duration(self.get_slide_duration()),
                                self.E.file(e)
-                               ),
-                            self.E.transition(
-                                   self.E.duration(self.get_trans_duration()),
-                                   self.E.from(e),
-                                   self.E.to(
-                                       self.items[(i + 1) % len(self.items)])
+                               )
+                           )
+            self.xml.append(self.E.transition(
+                                self.E.duration(self.get_trans_duration()),
+                                self.E('from', e),
+                                self.E.to(
+                                    self.items[(i + 1) % len(self.items)])
                                )
                            ) 
 

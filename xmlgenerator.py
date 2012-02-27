@@ -7,6 +7,10 @@ __version__ = 0.7
 
 from lxml import etree
 from lxml.builder import ElementMaker
+import os
+
+UBUNTU_WALLPAPERS = '/tmp/ubuntu-wallpapers.xml'
+#UBUNTU_WALLPAPERS = '/usr/share/gnome-background-properties/ubuntu-wallpapers.xml'
 
 
 class XmlGenerator:
@@ -68,4 +72,37 @@ class XmlGenerator:
         f.write(etree.tostring(self.xml, xml_declaration=True, 
                                encoding='utf-8', pretty_print=True))
         f.close()
+
+
+    @staticmethod
+    def install_wallpaper(fname):
+        '''
+        For Ubuntu 11.10 and above it's needed to add .xml file in
+        ubuntu-wallpapers.xml
+        '''
+
+        E = ElementMaker()
+        if os.access(UBUNTU_WALLPAPERS, os.W_OK):
+            wallpaper = E.wallpaper(
+                            E.name('slideshow1'), 
+                            E.filename(fname), 
+                            E.options('zoom') 
+                        )
+            wallpaper.attrib['deleted'] = 'false'
+
+            doc = None
+            with open(UBUNTU_WALLPAPERS) as f:
+                parser = etree.XMLParser(remove_blank_text=True)
+                doc = etree.parse(f, parser)
+
+            if doc:
+                doc.getroot().append(wallpaper)
+                data =  etree.tostring(doc, pretty_print=True,
+                                       encoding='utf-8', 
+                                       xml_declaration=True)
+
+                with open(UBUNTU_WALLPAPERS, 'w') as f:
+                    f.write(data)
+                
+
 
